@@ -1,0 +1,321 @@
+[
+    {
+        "id": "1f87a689066c28af",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "019d707503976354",
+        "type": "telegram receiver",
+        "z": "1f87a689066c28af",
+        "name": "",
+        "bot": "e837878a85afdbd1",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "x": 490,
+        "y": 620,
+        "wires": [
+            [
+                "02e61b865d91bb94"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "39abd64356157d5b",
+        "type": "telegram event",
+        "z": "1f87a689066c28af",
+        "name": "",
+        "bot": "e837878a85afdbd1",
+        "event": "callback_query",
+        "autoanswer": false,
+        "x": 480,
+        "y": 440,
+        "wires": [
+            [
+                "572b52b26f29f55b"
+            ]
+        ]
+    },
+    {
+        "id": "572b52b26f29f55b",
+        "type": "function",
+        "z": "1f87a689066c28af",
+        "name": "function 3",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = msg.payload.content;\nmsg.params = {\n    \"session_id\": msg.chatId\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 420,
+        "wires": [
+            [
+                "972ff2508eecd52b",
+                "310ae596f3a0c16d"
+            ]
+        ]
+    },
+    {
+        "id": "02e61b865d91bb94",
+        "type": "function",
+        "z": "1f87a689066c28af",
+        "name": "function 4",
+        "func": "msg.chatId = msg.payload.chatId;\nmsg.payload = msg.payload.content;\nmsg.params = {\n    \"session_id\": msg.chatId\n}\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 620,
+        "wires": [
+            [
+                "972ff2508eecd52b",
+                "501a8d0204c9ec5c"
+            ]
+        ]
+    },
+    {
+        "id": "972ff2508eecd52b",
+        "type": "watson-assistant-v2",
+        "z": "1f87a689066c28af",
+        "name": "",
+        "service-endpoint": "https://api.us-south.assistant.watson.cloud.ibm.com/instances/0b40b309-6412-4265-bc26-bab8ce04e725",
+        "assistant_id": "c3b4f4cb-80d2-457b-9b1e-7c3d90bf9d35",
+        "debug": false,
+        "restart": false,
+        "return_context": true,
+        "alternate_intents": false,
+        "multisession": true,
+        "timeout": "",
+        "optout-learning": false,
+        "persist-session-id": false,
+        "x": 990,
+        "y": 520,
+        "wires": [
+            [
+                "44ba65b5d77dc189",
+                "f950b22abfbf4659"
+            ]
+        ]
+    },
+    {
+        "id": "44ba65b5d77dc189",
+        "type": "function",
+        "z": "1f87a689066c28af",
+        "name": "function 5",
+        "func": "let generic = msg.payload.output.generic[0];\n\nif (generic.response_type === \"option\") {\n    let buttons = generic.options.map(o => [{\n        text: o.label,\n        callback_data: o.value.input.text\n    }]);\n\n    msg.payload = {\n        chatId: msg.chatId,\n        type: \"message\",\n        content: generic.title,\n        options: {\n            reply_markup: {\n                inline_keyboard: buttons\n            }\n        }\n    };\n} else {\n    msg.payload = {\n        chatId: msg.chatId,\n        type: \"message\",\n        content: generic.text || generic.title\n    };\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 520,
+        "wires": [
+            [
+                "0f743fcc5adb0b57",
+                "f950b22abfbf4659"
+            ]
+        ]
+    },
+    {
+        "id": "0f743fcc5adb0b57",
+        "type": "telegram sender",
+        "z": "1f87a689066c28af",
+        "name": "",
+        "bot": "e837878a85afdbd1",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1410,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "310ae596f3a0c16d",
+        "type": "debug",
+        "z": "1f87a689066c28af",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "501a8d0204c9ec5c",
+        "type": "debug",
+        "z": "1f87a689066c28af",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "f950b22abfbf4659",
+        "type": "debug",
+        "z": "1f87a689066c28af",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "abb55bf76f29b40a",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": " mensagens de texto enviadas por usuários no telegram caem aqui",
+        "info": "",
+        "x": 620,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "0ea44f95a7429780",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "vincula interações inline do telegram",
+        "info": "",
+        "x": 540,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "462aa60c4d153990",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "processa dados do botão pressionado (callback) e extrai a respoda para o assistant ",
+        "info": "",
+        "x": 1090,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3f931aab037bf5ec",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "extrai o chatId, text",
+        "info": "",
+        "x": 770,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "2bebed9187adfe0d",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "usado para verificar se os dados da function 3 estão formatados corretamente antes de ir para o assistente.",
+        "info": "",
+        "x": 1440,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "09c908229a91f122",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "usado para verificar se os dados da function 4 estão formatados corretamente antes de ir para o assistente.",
+        "info": "",
+        "x": 1360,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "b6d0e24a9a53d4a3",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "recebe mensagens tanto do usuário quanto dos botões e responde de acordo.",
+        "info": "",
+        "x": 630,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "30e975610c7f2186",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "usa os dados de msg.payload.output.generic",
+        "info": "estrutura com texto e botões inline se response_type === \"option\"",
+        "x": 1190,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "58e2a29bbd0196a8",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "envia a mensagem final",
+        "info": "",
+        "x": 1620,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "2490df97444672fe",
+        "type": "comment",
+        "z": "1f87a689066c28af",
+        "name": "pega saída final antes de enviar ao Telegram, para saber se a msg.payload está corretamente montada ",
+        "info": "",
+        "x": 1670,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "e837878a85afdbd1",
+        "type": "telegram bot",
+        "botname": "Aguinel2bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": 300,
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    }
+]
